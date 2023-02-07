@@ -4,10 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class App {
 
     static ArrayList<Player> playerList = new ArrayList<>();
+    static HashMap<String, Sport> sportMap = new HashMap<>();//initializing a hashMap
 
     /**
      * Players and sports application
@@ -19,11 +21,32 @@ public class App {
      * Each new player object is added to an ArrayList of Player objects
      * <br>
      * 
-     * @param args - args[0] will hold name of input file (to be done in lab)
+     * @param args //when you create a java program this takes all the parameters for documentation 
      */
     public static void main(String[] args)  {
         loadPlayerFile();
+        initSportMap();
         System.out.println(playerList);
+        System.out.println(sportMap);
+
+    }
+
+    private static void initSportMap() 
+    {
+        for (Player player : playerList)
+        {
+            ArrayList<String> sportsList = player.getSports();
+            for (String sportName: sportsList)
+            {
+                Sport sport = sportMap.get(sportName);
+                if (sport == null) 
+                {
+                    sport = new Sport(sportName);
+                    sportMap.put(sportName, sport);
+                }
+                sport.addPlayerName(player.getName());
+            }
+        }
     }
     
 
@@ -34,7 +57,7 @@ public class App {
      * 
      * 1 - Open input and output files
      * 2 - For each line of input
-     * 3 -- split line into tokans
+     * 3 -- split line into tokens
      * 4 -- create new player whose name is given by token[0]
      * 5 -- add remaining tokens to player's list of sports 
      * 6 - add player to player list
@@ -42,7 +65,7 @@ public class App {
      */
 
     private static void loadPlayerFile() {
-        File file = new File("res/players.txt");
+        File file = new File("F:/School/Java/Lab4 Starter/res/players.txt");
         try{
             // 1            
             FileReader fileReader = new FileReader(file);
